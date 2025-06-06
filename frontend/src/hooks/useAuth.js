@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect, useCallback, use } from 'react';
 import { useRouter } from 'next/navigation';
 import authService from '../app/api/services/auth/authService';
@@ -12,13 +14,19 @@ export function useAuth() {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const response = await authService.checkAuth();
-                if (response.user) {
-                    setUser(response.user);
+                const response = authService.checkAuth();
+                if (response) {
+                    setUser(response);
                     setIsAuthenticated(true);
+                } else {
+                    // No user is logged in, which is the expected initial state
+                    setUser(null);
+                    setIsAuthenticated(false);
                 }
             } catch (err) {
-                setError(err);
+                // Only show actual errors, not the normal "not authenticated" state
+                console.error('Auth check error:', err);
+                setUser(null);
                 setIsAuthenticated(false);
             } finally {
                 setLoading(false);
@@ -37,9 +45,9 @@ export function useAuth() {
             setIsAuthenticated(true);
             return response;
         } catch (err) {
-            setError(err.message);
-            throw err;
-            
+            const errorMessage = err.response?.data?.message || err.message || 'Error during login';
+            setError(errorMessage);
+            throw new Error(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -49,7 +57,7 @@ export function useAuth() {
         authService.logout();
         setUser(null);
         setIsAuthenticated(false);
-        navigate.push('/login');
+        navigate.push('/auth/login');
     }, [navigate]);
 
     return {

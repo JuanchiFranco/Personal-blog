@@ -78,8 +78,14 @@ const authService = {
             throw new Error('Credenciales incorrectas, verifica tu email y contraseña');
         }
 
-        // For simplicity, returning a token as the username
-        return `${user.role}`;
+        // Return user data without password
+        return {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
+        };
     }
 }
 

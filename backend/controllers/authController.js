@@ -18,8 +18,8 @@ const authController = {
     async login(req, res) {
         const { email, password } = req.body;
         try {
-            const token = await service.login(email, password);
-            res.status(200).json({ message: 'Login successful', token });
+            const user = await service.login(email, password);
+            res.status(200).json({ message: 'Inicio de sesión exitoso', user });
         } catch (error) {
             res.status(401).json({ error: error.message });
         }

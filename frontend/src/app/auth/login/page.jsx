@@ -54,11 +54,38 @@ const Login = () => {
         }
     };
 
+    // Only show loading state if we're actually checking auth state
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Cargando...</p>
+                </div>
+            </div>
+        );
+    }
+    
+    // If already authenticated, redirect to home
+    if (isAuthenticated) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-gray-600">Redirigiendo...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen flex flex-col items-center p-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
             <div className="max-w-md w-full bg-white p-6 rounded-lg shadow-md">
                 <h2 className="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h2>
-                {error && <p className="text-red-500 mb-4">{error}</p>}
+                {error && !loading && (
+                    <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+                        <p className="text-red-700">{error}</p>
+                    </div>
+                )}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">Email</label>

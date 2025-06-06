@@ -13,18 +13,18 @@ const AuthService = {
                 localStorage.setItem('user', JSON.stringify(response.data.user));
             }
 
-            return response.data; // Return the token or user data
+            return response.data?.user; // Return the token or user data
         } catch (error) {
             throw error;
         }
     },
 
     checkAuth() {
-        const user = localStorage.getItem('user');
-        if (user) {
-            return JSON.parse(user);
+        if (typeof window === 'undefined') {
+            return null; // Return null during server-side rendering
         }
-        throw new Error('User not authenticated');
+        const user = localStorage.getItem('user');
+        return user ? JSON.parse(user) : null;
     },
 
     logout() {
