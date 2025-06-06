@@ -1,0 +1,104 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useAuth } from '../../../hooks/useAuth';
+
+const Login = () => {
+    const [error, setError] = useState(null);
+    const [formData, setFormData] = useState({ 
+        email: '', 
+        password: '' 
+    });
+
+    const { login, isAuthenticated, loading, error: authError } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            // Redirigir al usuario a la página de inicio o dashboard después de iniciar sesión
+            router.push('/home');
+        }
+    }, [isAuthenticated, router]);
+
+    useEffect(() => {
+        if (authError) {
+            setError(authError);
+        }
+    }, [authError]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        if(error) setError(null);
+
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!formData.email || !formData.password) {
+            setError('Por favor, completa todos los campos.');
+            return;
+        }
+
+        try {
+            await login(formData.email, formData.password);
+        } catch (err) {
+            console.error('Login error:', err);
+        }
+    };
+
+    return (
+        <div className="min-h-screen flex flex-col items-center p-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+            <div className="max-w-md w-full bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h2>
+                {error && <p className="text-red-500 mb-4">{error}</p>}
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">Contraseña</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className={`w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                        {loading ? 'Cargando...' : 'Iniciar Sesión'}
+                    </button>
+                </form>
+                <p className="mt-4 text-sm text-center">
+                    ¿No tienes una cuenta? 
+                    <Link href="/register" className="text-blue-600 hover:underline ml-1">Regístrate aquí</Link>
+                </p>
+            </div>
+        </div>
+    )
+};
+
+export default Login;
