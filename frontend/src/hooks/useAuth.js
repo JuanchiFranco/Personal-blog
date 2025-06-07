@@ -36,6 +36,23 @@ export function useAuth() {
         checkAuth();
     }, []);
 
+    const register = useCallback(async (username, email, password) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await authService.register(username, email, password);
+            setUser(response.user);
+            setIsAuthenticated(true);
+            return response;
+        } catch (err) {
+            const errorMessage = err.response?.data?.message || err.message || 'Error during registration';
+            setError(errorMessage);
+            throw new Error(errorMessage);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
     const login = useCallback(async (email, password) => {
         setLoading(true);
         setError(null);
@@ -67,6 +84,7 @@ export function useAuth() {
         isAuthenticated,
         login,
         logout,
-        getUser: authService.checkAuth
+        getUser: authService.checkAuth,
+        register,
     };
 }

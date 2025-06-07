@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuth } from '../../../hooks/useAuth';
+import { useAuth } from '../../../../hooks/useAuth';
 
 const Login = () => {
     const [error, setError] = useState(null);
@@ -121,7 +121,7 @@ const Login = () => {
                 </form>
                 <p className="mt-4 text-sm text-center">
                     ¿No tienes una cuenta? 
-                    <Link href="/register" className="text-blue-600 hover:underline ml-1">Regístrate aquí</Link>
+                    <Link href="/auth/register" className="text-blue-600 hover:underline ml-1">Regístrate aquí</Link>
                 </p>
             </div>
         </div>

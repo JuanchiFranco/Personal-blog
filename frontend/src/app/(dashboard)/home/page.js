@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { useArticles } from '../../hooks/useArticles';
+import { useArticles } from '../../../hooks/useArticles';
 import Link from 'next/link';
 
 const Dashboard = () => {

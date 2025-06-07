@@ -1,6 +1,25 @@
 import apiClient from '../../config/axios';
 
 const AuthService = {
+    async register(username, email, password) {
+        try {
+            const response = await apiClient.post('/auth/register', { 
+                username: username.trim(), 
+                email: email.trim(), 
+                password: password.trim() 
+            });
+
+            if (response.data?.user) {
+                // Store user data in localStorage or sessionStorage
+                localStorage.setItem('user', JSON.stringify(response.data.user));
+            }
+
+            return response.data?.user; // Return the user data
+        } catch (error) {
+            throw error;
+        }
+    },
+
     async login(email, password) {
         try {
             const response = await apiClient.post('/auth/login', { 

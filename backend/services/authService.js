@@ -29,7 +29,7 @@ async function getAllUsers() {
 }
 
 const authService = {
-    async register(email, password) {
+    async register(username, email, password) {
         let users = await getAllUsers();
 
         // Check if user already exists
@@ -43,6 +43,7 @@ const authService = {
         // Add new user with hashed password
         const newUser = {
             id: users.length + 1, // Simple ID generation
+            username: username || 'Usuario', // Default username if not provided
             email: email,
             password: hashedPassword,
             role: 'public', // Default role
@@ -56,6 +57,8 @@ const authService = {
 
         return {
             id: newUser.id,
+            username: newUser.username,
+            role: newUser.role,
             email: newUser.email,
             createdAt: newUser.createdAt,
             updatedAt: newUser.updatedAt
@@ -81,6 +84,7 @@ const authService = {
         // Return user data without password
         return {
             id: user.id,
+            username: user.username || 'Usuario', // Default username if not set
             email: user.email,
             role: user.role,
             createdAt: user.createdAt,
