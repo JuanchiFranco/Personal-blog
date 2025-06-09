@@ -7,7 +7,6 @@ import Link from 'next/link';
 
 const Dashboard = () => {
     const { articles, loading, error } = useArticles();
-    
 
     return (
         <div className="min-h-screen flex flex-col items-center p-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">

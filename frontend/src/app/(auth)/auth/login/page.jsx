@@ -17,8 +17,16 @@ const Login = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            // Redirigir al usuario a la página de inicio o dashboard después de iniciar sesión
-            router.push('/home');
+            // revsamos si el usuario tiene un rol de admin, para redirigirlo a la página de administración
+            if (typeof window !== 'undefined') {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (user && user.role === 'admin') {
+                    router.push('/admin');
+                } else {
+                    router.push('/home');
+                }
+            }
+
         }
     }, [isAuthenticated, router]);
 
