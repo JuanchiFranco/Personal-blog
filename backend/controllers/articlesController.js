@@ -21,6 +21,42 @@ const articlesController = {
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
+    },
+
+    async createArticle(req, res) {
+        const { title, content } = req.body;
+
+        // validamos que los campos requeridos estén presentes
+        if (!title || !content) {
+            return res.status(400).json({ message: 'El título y el contenido son obligatorios' });
+        }
+
+        try {
+            const newArticle = await service.createArticle({ title, content });
+            res.status(201).json(newArticle);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
+
+    async updateArticle(req, res) {
+        const { id } = req.params;
+        const { title, content } = req.body;
+
+        // validamos que los campos requeridos estén presentes
+        if (!title || !content) {
+            return res.status(400).json({ message: 'El título y el contenido son obligatorios' });
+        }
+
+        try {
+            const updatedArticle = await service.updateArticle(id, { title, content });
+            if (!updatedArticle) {
+                return res.status(404).json({ message: 'Artículo no encontrado' });
+            }
+            res.status(200).json(updatedArticle);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
     }
 }
 
