@@ -47,7 +47,9 @@ const articleService = {
         try {
             const data = fs.readFileSync(filePath, 'utf8');
             const articles = JSON.parse(data);
-            const articleIndex = this.getArticleById(id)?.id - 1;
+            const article = await this.getArticleById(id);
+            const articleIndex = article?.id - 1;
+            
             if (articleIndex === -1 || !articles.articles[articleIndex]) {
                 throw new Error('Artículo no encontrado');
             }
