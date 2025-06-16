@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const articlesRouter = require('./router/articles'); 
 const authRouter = require('./router/auth');
+process.loadEnvFile();
 
 const PORT = process.env.PORT || 3001;
 

@@ -9,6 +9,7 @@ const apiClient = axios.create({
     timeout: REQUEST_TIMEOUT,
     headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${typeof window !== 'undefined' ? localStorage.getItem('token') : ''}`, // Get token from localStorage if available
     },
 });
 

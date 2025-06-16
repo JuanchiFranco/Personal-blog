@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+process.loadEnvFile();
 
 const filePath = path.join(__dirname, '../data/users.json');
 
@@ -55,14 +57,21 @@ const authService = {
         // Write updated users back to file
         fs.writeFileSync(filePath, JSON.stringify(users, null, 2));
 
+        // generamos un token de acceso para el usuario con jsonwebtoken
+        const token = jwt.sign({ id: newUser.id, email: newUser.email, role: newUser.role }, process.env.JWT_SECRET, {
+            algorithm: 'HS256', // Algoritmo de firma
+            expiresIn: '1h' // Token expiration time
+        });
+
         return {
             id: newUser.id,
             username: newUser.username,
-            role: newUser.role,
             email: newUser.email,
+            role: newUser.role,
             createdAt: newUser.createdAt,
-            updatedAt: newUser.updatedAt
-        };
+            updatedAt: newUser.updatedAt,
+            token // Return the generated token
+        }
     },
 
     async login(email, password) {
@@ -81,6 +90,12 @@ const authService = {
             throw new Error('Credenciales incorrectas, verifica tu email y contraseña');
         }
 
+        // Generate access token for the user
+        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, {
+            algorithm: 'HS256',
+            expiresIn: '1h' // Token expiration time
+        });
+
         // Return user data without password
         return {
             id: user.id,
@@ -88,7 +103,8 @@ const authService = {
             email: user.email,
             role: user.role,
             createdAt: user.createdAt,
-            updatedAt: user.updatedAt
+            updatedAt: user.updatedAt,
+            token // Return the generated token
         };
     }
 }

@@ -12,6 +12,9 @@ const AuthService = {
             if (response.data?.user) {
                 // Store user data in localStorage or sessionStorage
                 localStorage.setItem('user', JSON.stringify(response.data.user));
+
+                // guardamos el token de acceso en localStorage
+                localStorage.setItem('token', response.data.user.token);
             }
 
             return response.data?.user; // Return the user data
@@ -30,6 +33,9 @@ const AuthService = {
             if (response.data?.user) {
                 // Store user data in localStorage or sessionStorage
                 localStorage.setItem('user', JSON.stringify(response.data.user));
+
+                // guardamos el token de acceso en localStorage
+                localStorage.setItem('token', response.data.user.token);
             }
 
             return response.data?.user; // Return the token or user data

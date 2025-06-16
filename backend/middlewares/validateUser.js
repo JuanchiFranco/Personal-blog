@@ -1,17 +1,33 @@
+const jwt = require('jsonwebtoken');
+process.loadEnvFile();
+
+const SECRET_KEY = process.env.JWT_SECRET // Usa tu clave secreta real
+
+if (!SECRET_KEY) {
+    throw new Error('JWT_SECRET no está definido en las variables de entorno.');
+}
+
 const validatorUser = {
     isAdmin: (req, res, next) => {
-        // Verifica si el usuario está autenticado
-        if (!req.user) {
-            return res.status(401).json({ message: 'Usuario no autenticado' });
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: 'Token no proporcionado.' });
         }
 
-        // Verifica si el usuario tiene el rol de administrador
-        if (req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'Acceso denegado: Solo administradores' });
-        }
+        const token = authHeader.split(' ')[1];
 
-        // Si pasa las validaciones, continúa con la siguiente función middleware
-        next();
+        try {
+            const decoded = jwt.verify(token, SECRET_KEY);
+            req.user = decoded;
+
+            if (req.user.role !== 'admin') {
+                return res.status(403).json({ message: 'Acceso denegado. Se requiere rol de administrador.' });
+            }
+
+            next();
+        } catch (err) {
+            return res.status(401).json({ message: 'Token inválido.' });
+        }
     }
 }
 
