@@ -13,7 +13,7 @@ const ArticleService = {
     async getArticleById(id) {
         try {
             const response = await apiClient.get(`/articles/${id}`);
-            return response.data?.article || null; // Return the article or null if not found
+            return response.data || null; // Return the article or null if not found
         } catch (error) {
             throw error;
         }
