@@ -67,6 +67,24 @@ const articleService = {
             throw new Error('No se pudo actualizar el artículo');
         }
 
+    },
+
+    async deleteArticle(id) {
+        const filePath = path.join(__dirname, '../data/articles.json');
+        try {
+            const data = fs.readFileSync(filePath, 'utf8');
+            const articles = JSON.parse(data);
+            const articleIndex = articles.articles.findIndex(article => article.id === parseInt(id, 10));
+            if (articleIndex === -1) {
+                throw new Error('Artículo no encontrado');
+            }
+            articles.articles.splice(articleIndex, 1);
+            fs.writeFileSync(filePath, JSON.stringify(articles, null, 2));
+            return { message: 'Artículo eliminado exitosamente' };
+        }catch (error) {
+            console.error('Error eliminando el artículo:', error);
+            throw new Error('No se pudo eliminar el artículo');
+        }
     }
 }
 

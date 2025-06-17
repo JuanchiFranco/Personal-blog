@@ -16,5 +16,8 @@ router.post('/articles', validateUser.isAdmin, articlesController.createArticle)
 // Ruta para actualizar un artículo (solo administradores)
 router.put('/articles/:id', validateUser.isAdmin, articlesController.updateArticle);
 
+// Ruta para eliminar un artículo (solo administradores)
+router.delete('/articles/:id', validateUser.isAdmin, articlesController.deleteArticle);
+
 module.exports = router;
 

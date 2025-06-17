@@ -2,8 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-
-
+import Image from 'next/image';
 
 const Header = () => {
     const { user, isAuthenticated, logout } = useAuth();
@@ -13,7 +12,13 @@ const Header = () => {
             <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
                 <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
                     <a href="/" className="flex items-center">
-                        <img src="https://flowbite.com/docs/images/logo.svg" className="mr-3 h-6 sm:h-9" alt="Flowbite Logo" />
+                        <Image
+                            src="/logo.svg"
+                            className="h-8 mr-3"
+                            alt="Logo Personal Blog"
+                            width={32}
+                            height={32}
+                        />
                         <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Personal Blog</span>
                     </a>
                     <div className="flex items-center lg:order-2">

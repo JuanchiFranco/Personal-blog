@@ -98,7 +98,7 @@ export function useDeleteArticle (id) {
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
 
-    const deleteArticle = async () => {
+    const deleteArticle = async (id) => {
         setIsLoading(true);
         try {
             const response = await ArticleService.deleteArticle(id);

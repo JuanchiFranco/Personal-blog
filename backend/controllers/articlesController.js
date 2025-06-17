@@ -57,6 +57,20 @@ const articlesController = {
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
+    },
+
+    async deleteArticle(req, res) {
+        const { id } = req.params;
+
+        try {
+            const deletedArticle = await service.deleteArticle(id);
+            if (!deletedArticle) {
+                return res.status(404).json({ message: 'Artículo no encontrado' });
+            }
+            res.status(200).json({ message: 'Artículo eliminado exitosamente' });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
     }
 }
 

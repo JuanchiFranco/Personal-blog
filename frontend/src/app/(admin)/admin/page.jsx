@@ -2,21 +2,28 @@
 
 import React from 'react';
 
-import { useArticles } from '../../../hooks/useArticles';
+import { useArticles, useDeleteArticle } from '../../../hooks/useArticles';
 import { useAuth } from '../../../hooks/useAuth';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Dashboard = () => {
     const { articles, loading, error } = useArticles();
     const { isAuthenticated, user } = useAuth();
     const [showError, setShowError] = useState(false);
+    const router = useRouter();
+    const { deleteArticle } = useDeleteArticle();
 
     useEffect(() => {
         if (isAuthenticated && user && user.role !== 'admin') {
             setShowError(true);
         }
     }, [isAuthenticated, user]);
+
+    const handleRefresh = () => {
+        window.location.reload();
+    };
 
     if (!isAuthenticated) {
         return (
@@ -85,12 +92,24 @@ const Dashboard = () => {
                                 >
                                     Editar
                                 </Link>
-                                <Link
-                                    href={`/admin/article/delete/${article.id}`}
+                                <button
+                                    onClick={() => {
+                                        if (window.confirm('¿Estás seguro de que deseas eliminar este artículo?')) {
+                                            console.log('Deleting article:', article.id);
+                                            deleteArticle(article.id)
+                                                .then(() => {
+                                                    console.log('Article deleted successfully');
+                                                    handleRefresh();
+                                                })
+                                                .catch(err => {
+                                                    console.error('Error deleting article:', err);
+                                                });
+                                        }
+                                    }}
                                     className="text-red-600 hover:underline ml-4"
                                 >
                                     Eliminar
-                                </Link>
+                                </button>
                             </li>
                         ))
                     )}
