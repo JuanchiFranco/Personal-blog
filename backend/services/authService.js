@@ -58,7 +58,7 @@ const authService = {
         fs.writeFileSync(filePath, JSON.stringify(users, null, 2));
 
         // generamos un token de acceso para el usuario con jsonwebtoken
-        const token = jwt.sign({ id: newUser.id, email: newUser.email, role: newUser.role }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: newUser.id, username: newUser.username, email: newUser.email, role: newUser.role }, process.env.JWT_SECRET, {
             algorithm: 'HS256', // Algoritmo de firma
             expiresIn: '1h' // Token expiration time
         });
@@ -91,7 +91,7 @@ const authService = {
         }
 
         // Generate access token for the user
-        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: user.id, username: user.username, email: user.email, role: user.role }, process.env.JWT_SECRET, {
             algorithm: 'HS256',
             expiresIn: '1h' // Token expiration time
         });

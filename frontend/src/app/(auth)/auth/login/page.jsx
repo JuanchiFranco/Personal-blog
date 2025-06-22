@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '../../../../hooks/useAuth';
+import { jwtDecode } from 'jwt-decode';
+import authService from '../../../../app/api/services/auth/authService';
 
 const Login = () => {
     const [error, setError] = useState(null);
@@ -17,16 +19,31 @@ const Login = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            // revsamos si el usuario tiene un rol de admin, para redirigirlo a la página de administración
+            // Obtener el token y decodificarlo para obtener el rol
             if (typeof window !== 'undefined') {
-                const user = JSON.parse(localStorage.getItem('user'));
-                if (user && user.role === 'admin') {
-                    router.push('/admin');
+                const token = localStorage.getItem('token');
+                if (token) {
+                    try {
+                        const decodedToken = jwtDecode(token);
+                        console.log('Decoded token:', decodedToken);
+                        // Store the token in localStorage
+                        localStorage.setItem('token', token);
+                        
+                        if (decodedToken.role === 'admin') {
+                            router.push('/admin');
+                        } else {
+                            router.push('/home');
+                        }
+                    } catch (error) {
+                        console.error('Error decoding token:', error);
+                        // Si hay error al decodificar, redirigir a home por defecto
+                        router.push('/home');
+                    }
                 } else {
+                    // Si no hay token, redirigir a home
                     router.push('/home');
                 }
             }
-
         }
     }, [isAuthenticated, router]);
 

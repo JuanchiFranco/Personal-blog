@@ -59,6 +59,7 @@ export function useCreateArticle () {
         try {
             const response = await ArticleService.createArticle(articleData);
             setSuccessMessage('Artículo creado exitosamente');
+            console.log("Articulo creado, ", response)
             return response;
         } catch (err) {
             setError(err);
@@ -80,6 +81,7 @@ export function useUpdateArticle (id) {
         setIsLoading(true);
         try {
             const response = await ArticleService.updateArticle(id, articleData);
+            console.log("Articulo actualizado")
             setSuccessMessage('Artículo actualizado exitosamente');
             return response;
         } catch (err) {

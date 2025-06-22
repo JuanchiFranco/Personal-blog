@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-
 import { useArticles, useDeleteArticle } from '../../../hooks/useArticles';
 import { useAuth } from '../../../hooks/useAuth';
 import Link from 'next/link';
@@ -15,25 +14,19 @@ const Dashboard = () => {
     const router = useRouter();
     const { deleteArticle } = useDeleteArticle();
 
-    useEffect(() => {
-        if (isAuthenticated && user && user.role !== 'admin') {
-            setShowError(true);
-        }
-    }, [isAuthenticated, user]);
-
     const handleRefresh = () => {
         window.location.reload();
     };
 
-    if (!isAuthenticated) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
-                    <p className="text-red-700">Debes iniciar sesión para acceder a esta página.</p>
-                </div>
-            </div>
-        );
-    }
+    useEffect(() => {
+        if (!isAuthenticated) {
+            setShowError(true);
+        } else if (user?.role !== 'admin') {
+            setShowError(true);
+        } else {
+            setShowError(false);
+        }
+    }, [isAuthenticated, user, router]);
 
     if (showError) {
         return (
@@ -48,72 +41,57 @@ const Dashboard = () => {
     return (
         <div className="min-h-screen flex flex-col items-center p-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
             <div className="flex flex-col items-center gap-4 max-w-xl w-full mt-8">
-                <div className="flex justify-between w-full mb-6">
-                    <h1 className="text-2xl font-bold mb-6">Artículos</h1>
-                    <Link
-                        href="/admin/article/create"
-                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-                    >
-                        Crear Artículo
-                    </Link>
-                </div>
-                {error && !loading && (
-                    <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-                        <p className="text-red-700">{error}</p>
+                <h1 className="text-4xl font-bold">Panel de Administración</h1>
+                <div className="w-full">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-semibold">Artículos</h2>
+                        <Link
+                            href="/admin/article/create"
+                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        >
+                            Nuevo Artículo
+                        </Link>
                     </div>
-                )}
-                <ul className="w-full">
-                    {loading ? (
-                        <li className="text-gray-500 text-center">Cargando...</li>
-                    ) : (
-                        articles.length === 0 && (
-                            <li className="text-gray-500 text-center">No hay artículos disponibles.</li>
-                        )
+                    {loading && <p>Cargando...</p>}
+                    {error && <p>Error: {error}</p>}
+                    {!loading && !error && articles.length === 0 && (
+                        <p>No hay artículos disponibles.</p>
                     )}
-                    {articles.length > 0 && (
-                        articles.map(article => (
-                            <li
-                                key={article.id}
-                                className="mb-4 text-lg flex justify-between items-center"
-                            >
-                                <Link
-                                    href={`/article/${article.id}`}
-                                    className="hover:underline flex-1"
-                                >
-                                    {article.title}
-                                </Link>
-                                <span className="text-gray-500 text-sm ml-24">
-                                    {new Date(article.createdAt).toLocaleDateString()}
-                                </span>
-
-                                <Link
-                                    href={`/admin/article/edit/${article.id}`}
-                                    className="text-blue-600 hover:underline ml-4"
-                                >
-                                    Editar
-                                </Link>
-                                <button
-                                    onClick={() => {
-                                        if (window.confirm('¿Estás seguro de que deseas eliminar este artículo?')) {
-                                            console.log('Deleting article:', article.id);
-                                            deleteArticle(article.id)
-                                                .then(() => {
-                                                    console.log('Article deleted successfully');
-                                                    handleRefresh();
-                                                })
-                                                .catch(err => {
-                                                    console.error('Error deleting article:', err);
-                                                });
-                                        }
-                                    }}
-                                    className="text-red-600 hover:underline ml-4"
-                                >
-                                    Eliminar
-                                </button>
+                    <ul className="space-y-4">
+                        {articles.map((article) => (
+                            <li key={article.id} className="flex justify-between items-center p-4 bg-white rounded shadow">
+                                <div className="flex-1">
+                                    <h3 className="font-semibold">{article.title}</h3>
+                                    <p className="text-gray-600">{article.createdAt}</p>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <Link
+                                        href={`/admin/article/edit/${article.id}`}
+                                        className="text-blue-600 hover:underline"
+                                    >
+                                        Editar
+                                    </Link>
+                                    <button
+                                        onClick={() => {
+                                            if (window.confirm('¿Estás seguro de que deseas eliminar este artículo?')) {
+                                                deleteArticle(article.id)
+                                                    .then(() => {
+                                                        handleRefresh();
+                                                    })
+                                                    .catch(err => {
+                                                        console.error('Error deleting article:', err);
+                                                    });
+                                            }
+                                        }}
+                                        className="text-red-600 hover:underline"
+                                    >
+                                        Eliminar
+                                    </button>
+                                </div>
                             </li>
-                        ))
-                    )}
-                </ul>
+                        ))}
+                    </ul>
+                </div>
             </div>
         </div>
     );

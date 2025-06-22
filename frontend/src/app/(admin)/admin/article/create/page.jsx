@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { useCreateArticle } from "@/hooks/useArticles";
+import { useRouter } from "next/navigation";
 
 export default function CreateArticlePage() {
+    const router = useRouter();
     const { createArticle, isLoading: isCreating, error: createError, successMessage } = useCreateArticle();
     const [formData, setFormData] = useState({
         title: '',
@@ -22,8 +24,17 @@ export default function CreateArticlePage() {
         e.preventDefault();
         try {
             await createArticle(formData);
-            // Optionally reset form after success
-            // setFormData({ title: '', content: '' });
+
+            // Reset form after successful creation
+            setFormData({
+                title: '',
+                content: '',
+            });
+
+            // esperamos 3 segundos antes de redirigir
+            setTimeout(() => {
+                router.push('/admin');
+            }, 3000);
         } catch (error) {
             console.error('Error al crear el artículo:', error);
         }

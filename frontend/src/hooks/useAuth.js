@@ -3,37 +3,54 @@
 import { useState, useEffect, useCallback, use } from 'react';
 import { useRouter } from 'next/navigation';
 import authService from '../app/api/services/auth/authService';
+import { jwtDecode } from 'jwt-decode';
 
 export function useAuth() {
-    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [user, setUser] = useState(null);
     const navigate = useRouter();
 
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const response = authService.checkAuth();
-                if (response) {
-                    setUser(response);
+                const authData = authService.checkAuth();
+
+                if (authData?.token) {
                     setIsAuthenticated(true);
+                    try {
+                        // Decode token to get user info
+                        const decodedToken = jwtDecode(authData.token);
+                        setUser(decodedToken);    
+                    } catch (decodeError) {
+                        console.error('Error decoding token:', decodeError);
+                        setIsAuthenticated(false);
+                        setUser(null);
+                    }
                 } else {
-                    // No user is logged in, which is the expected initial state
-                    setUser(null);
                     setIsAuthenticated(false);
+                    setUser(null);
                 }
             } catch (err) {
-                // Only show actual errors, not the normal "not authenticated" state
                 console.error('Auth check error:', err);
-                setUser(null);
                 setIsAuthenticated(false);
+                setUser(null);
             } finally {
                 setLoading(false);
             }
         };
 
         checkAuth();
+
+        // Agregar un listener para detectar cambios en el localStorage
+/*         const handleStorageChange = () => {
+            console.log('Storage changed, checking auth...');
+            checkAuth();
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange); */
     }, []);
 
     const register = useCallback(async (username, email, password) => {
@@ -41,8 +58,12 @@ export function useAuth() {
         setError(null);
         try {
             const response = await authService.register(username, email, password);
-            setUser(response.user);
-            setIsAuthenticated(true);
+            if (response.token) {
+                localStorage.setItem('token', response.token);
+                setIsAuthenticated(true);
+                const decodedToken = jwtDecode(response.token);
+                setUser(decodedToken);
+            }
             return response;
         } catch (err) {
             const errorMessage = err.response?.data?.message || err.message || 'Error during registration';
@@ -58,8 +79,12 @@ export function useAuth() {
         setError(null);
         try {
             const response = await authService.login(email, password);
-            setUser(response.user);
-            setIsAuthenticated(true);
+            if (response.token) {
+                localStorage.setItem('token', response.token);
+                setIsAuthenticated(true);
+                const decodedToken = jwtDecode(response.token);
+                setUser(decodedToken);
+            }
             return response;
         } catch (err) {
             const errorMessage = err.response?.data?.message || err.message || 'Error during login';
@@ -72,19 +97,17 @@ export function useAuth() {
 
     const logout = useCallback(() => {
         authService.logout();
-        setUser(null);
         setIsAuthenticated(false);
         navigate.push('/auth/login');
     }, [navigate]);
 
     return {
-        user,
         loading,
         error,
         isAuthenticated,
         login,
         logout,
-        getUser: authService.checkAuth,
         register,
+        user,
     };
 }
