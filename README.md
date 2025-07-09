@@ -27,33 +27,33 @@ The blog have two sections: a guest section and an admin section.
     git clone https://github.com/JuanchiFranco/Personal-blog.git
     ```
 
-    ## Usage
-    1. Navigate to the `backend` directory:
-        ```bash
-        cd Personal-blog/backend
-        ```
+## Usage
+1. Navigate to the `backend` directory:
+    ```bash
+    cd Personal-blog/backend
+    ```
 
-    2. Install the backend dependencies:
-        ```bash
-        npm install
-        ```
+2. Install the backend dependencies:
+    ```bash
+    npm install
+    ```
 
-    3. Start the backend development server:
-        ```bash
-        npm run dev
-        ```
+3. Start the backend development server:
+    ```bash
+    npm run dev
+    ```
 
-    4. Open a new terminal and navigate to the `frontend` directory:
-        ```bash
-        cd ../frontend
-        ```
+4. Open a new terminal and navigate to the `frontend` directory:
+    ```bash
+    cd ../frontend
+    ```
 
-    5. Install the frontend dependencies:
-        ```bash
-        npm install
-        ```
+5. Install the frontend dependencies:
+    ```bash
+    npm install
+    ```
 
-    6. Start the frontend development server:
-        ```bash
-        npm run dev
-        ```
+6. Start the frontend development server:
+    ```bash
+    npm run dev
+    ```
