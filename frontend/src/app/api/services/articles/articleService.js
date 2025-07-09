@@ -30,7 +30,6 @@ const ArticleService = {
     async createArticle(articleData) {
         try {
             const response = await apiClient.post('/articles', articleData);
-            console.log(response)
             if (response.status!= 201) {
                 throw new ApiError(ERROR_TYPES.VALIDATION, ERROR_MESSAGES[ERROR_TYPES.VALIDATION], { endpoint: '/articles' });
             }
@@ -43,7 +42,6 @@ const ArticleService = {
     async updateArticle(id, articleData) {
         try {
             const response = await apiClient.put(`/articles/${id}`, articleData);
-            console.log(response)
             if (response.status !==200) {
                 throw new ApiError(ERROR_TYPES.VALIDATION, ERROR_MESSAGES[ERROR_TYPES.VALIDATION], { endpoint: `/articles/${id}` });
             }
@@ -55,7 +53,9 @@ const ArticleService = {
 
     async deleteArticle(id) {
         try {
-            const response = await apiClient.delete(`/articles/${id}`);
+            const response = await apiClient.delete(`/articles/${id}`,
+                { headers: { 'authorization': `Bearer ${localStorage.getItem('token')}` } }
+            );
             if (!response.data?.message) {
                 throw new ApiError(ERROR_TYPES.VALIDATION, ERROR_MESSAGES[ERROR_TYPES.VALIDATION], { endpoint: `/articles/${id}` });
             }

@@ -28,7 +28,7 @@ const articleService = {
             const data = fs.readFileSync(filePath, 'utf8');
             const articles = JSON.parse(data);
             const newArticle = {
-                id: articles.articles.length + 1,
+                id: this.lastIndex(articles.articles) + 1,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
                 ...articleData
@@ -48,9 +48,9 @@ const articleService = {
             const data = fs.readFileSync(filePath, 'utf8');
             const articles = JSON.parse(data);
             const article = await this.getArticleById(id);
-            const articleIndex = article?.id - 1;
-            
-            if (articleIndex === -1 || !articles.articles[articleIndex]) {
+
+            const articleIndex = articles.articles.findIndex(article => article.id === parseInt(id, 10));
+            if (articleIndex === -1 || !article) {
                 throw new Error('Artículo no encontrado');
             }
 
@@ -85,6 +85,14 @@ const articleService = {
             console.error('Error eliminando el artículo:', error);
             throw new Error('No se pudo eliminar el artículo');
         }
+    },
+
+    lastIndex(articles) {
+        if (!articles || articles.length === 0) {
+            return 0;
+        }
+        const lastArticle = articles[articles.length - 1];
+        return lastArticle.id;
     }
 }
 

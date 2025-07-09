@@ -42,15 +42,6 @@ export function useAuth() {
         };
 
         checkAuth();
-
-        // Agregar un listener para detectar cambios en el localStorage
-/*         const handleStorageChange = () => {
-            console.log('Storage changed, checking auth...');
-            checkAuth();
-        };
-
-        window.addEventListener('storage', handleStorageChange);
-        return () => window.removeEventListener('storage', handleStorageChange); */
     }, []);
 
     const register = useCallback(async (username, email, password) => {

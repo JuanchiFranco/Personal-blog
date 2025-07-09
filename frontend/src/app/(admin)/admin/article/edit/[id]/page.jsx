@@ -3,10 +3,8 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useArticle, useUpdateArticle } from "@/hooks/useArticles";
-import { useRouter } from "next/navigation";
 
 export default function EditArticlePage() {
-    const router = useRouter();
     const params = useParams();
     const { id } = params;
     const { article, isLoading, error } = useArticle(id);
@@ -39,15 +37,7 @@ export default function EditArticlePage() {
         try {
             await updateArticle(formData);
 
-            // Reset form after successful update
-            setFormData({
-                title: '',
-                content: '',
-            });
-            // esperamos 3 segundos antes de redirigir
-            setTimeout(() => {
-                router.push('/admin');
-            }, 3000);
+            
         } catch (error) {
             console.error('Error al actualizar el artículo:', error);
         }

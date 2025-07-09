@@ -25,7 +25,6 @@ const Login = () => {
                 if (token) {
                     try {
                         const decodedToken = jwtDecode(token);
-                        console.log('Decoded token:', decodedToken);
                         // Store the token in localStorage
                         localStorage.setItem('token', token);
                         

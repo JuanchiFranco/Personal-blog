@@ -59,7 +59,6 @@ export function useCreateArticle () {
         try {
             const response = await ArticleService.createArticle(articleData);
             setSuccessMessage('Artículo creado exitosamente');
-            console.log("Articulo creado, ", response)
             return response;
         } catch (err) {
             setError(err);
@@ -81,7 +80,6 @@ export function useUpdateArticle (id) {
         setIsLoading(true);
         try {
             const response = await ArticleService.updateArticle(id, articleData);
-            console.log("Articulo actualizado")
             setSuccessMessage('Artículo actualizado exitosamente');
             return response;
         } catch (err) {
@@ -103,6 +101,7 @@ export function useDeleteArticle (id) {
     const deleteArticle = async (id) => {
         setIsLoading(true);
         try {
+            console.log('Deleting article with ID:', id);
             const response = await ArticleService.deleteArticle(id);
             setSuccessMessage('Artículo eliminado exitosamente');
             return response;

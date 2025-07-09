@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Mi Blog Personal",
   description: "Un lugar para compartir artículos, reflexiones y experiencias",
+  icons: {
+    icon: '/logo.svg',
+  },
 };
 
 export default function RootLayout({ children }) {
